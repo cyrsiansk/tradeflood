@@ -78,6 +78,7 @@ class Turn:
 
 F = TypeVar("F", bound=Callable[..., Any])
 
+
 def turn(func: F) -> F:
     @wraps(func)
     def wrapper(*args, **kwargs):
