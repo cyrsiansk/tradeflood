@@ -1,4 +1,6 @@
 from contextvars import ContextVar
+from functools import wraps
+from typing import TypeVar, Callable, Any, cast
 
 execution_list = ContextVar("execution_list")
 executions_list = ContextVar("executions_list")
@@ -74,9 +76,9 @@ class Turn:
         return False
 
 
-from functools import wraps
+F = TypeVar("F", bound=Callable[..., Any])
 
-def turn(func):
+def turn(func: F) -> F:
     @wraps(func)
     def wrapper(*args, **kwargs):
         ex_list = execution_list.get()
@@ -96,12 +98,12 @@ def turn(func):
 
         return res
 
-    return wrapper
+    return cast(F, wrapper)
 
 
-def _turn_execution(func):
+def _turn_execution(func: Callable[..., Call]) -> Callable[..., Call]:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs) -> Call:
         ex_list = execution_list.get()
         call = Call(func, *args, **kwargs)
         block = execution_list_block.get()
@@ -112,13 +114,13 @@ def _turn_execution(func):
     return wrapper
 
 
-def turn_execution(func):
+def turn_execution(func: Callable[..., Any]) -> Callable[..., Call]:
     return turn(_turn_execution(func))
 
 
-def _turn_execution_blocker(func):
+def _turn_execution_blocker(func: Callable[..., Any]) -> Callable[..., Call]:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs) -> Call:
         ex_list = execution_list.get()
         execution_list_block.set(True)
         call = Call(func, *args, **kwargs)
@@ -129,9 +131,8 @@ def _turn_execution_blocker(func):
     return wrapper
 
 
-def turn_execution_blocker(func):
+def turn_execution_blocker(func: Callable[..., Any]) -> Callable[..., Call]:
     return turn(_turn_execution_blocker(func))
-
 
 
 @turn_execution_blocker
