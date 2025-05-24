@@ -61,5 +61,7 @@ if __name__ == "__main__":
     with Turn():
         logOutage("check separated")
 
+    logOutage("check separated")
+
     print__()
     print("End")
