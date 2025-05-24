@@ -62,6 +62,7 @@ if __name__ == "__main__":
         logOutage("check separated")
 
     logOutage("check separated")
+    check1()
 
     print__()
     print("End")
