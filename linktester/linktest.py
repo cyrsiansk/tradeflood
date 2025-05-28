@@ -1,4 +1,4 @@
-from linktester import classes
+from linktester import classes, registry
 from turn_system import turn, turn_execution
 from typing import TypeVar
 
@@ -21,15 +21,8 @@ class Candle:
         return f"Candle({self.t}, {self.value})"
 
 
-class HistoryFetcherCandleInterface:
-    history_fetcher: F
-
-    def get_data(self, start, amount, ticker):
-        pass
-
-
-@classses.link(BinanceHistoryFetcher, Candle)
-class BinanceHistoryFetcherCandleInterface(HistoryFetcherCandleInterface):
+@registry.link(BinanceHistoryFetcher, Candle)
+class BinanceHistoryFetcherCandleInterface(classes.HistoryFetcherCandleInterface):
     @turn_execution
     def process_data(self, data, start):
         data = data()
@@ -43,4 +36,3 @@ class BinanceHistoryFetcherCandleInterface(HistoryFetcherCandleInterface):
     def get_data(self, start, amount, ticker):
         data = self.history_fetcher.get_data(start, amount, ticker)
         return self.process_data(data, start)
-

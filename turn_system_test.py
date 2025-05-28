@@ -1,5 +1,5 @@
 from turn_system import turn, turn_execution, Turn, call__if_eq__, Call
-from linktester import linktest
+import linktester
 
 
 @turn_execution
@@ -50,6 +50,23 @@ def check4():
     log_result(checkSystem())
 
 
+@turn_execution
+def print_execution(*args, **kwargs):
+    sep = kwargs.get("sep", " ")
+    end = kwargs.get("end", "\n")
+    is_first = True
+    for arg in args:
+        if not is_first:
+            print(sep, end="")
+
+        if isinstance(arg, Call):
+            print(arg(), end="")
+        else:
+            print(arg, end="")
+        is_first = False
+        print(end=end)
+
+
 def print__():
     print("________________________________")
     print()
@@ -59,12 +76,12 @@ if __name__ == "__main__":
     print("Start")
     print__()
 
-    with Turn():
-        binance = linktest.BinanceHistoryFetcher()
-        fetcher = linktest.BinanceHistoryFetcherCandleInterface()
-        fetcher.history_fetcher = binance
+    source = linktester.BinanceHistoryFetcher()
+    interface = linktester.InterfaceSearcher(source, linktester.Candle)
 
-        log_result(fetcher.get_data(0, 10, "BTCUSDT"))
+    with Turn():
+        data = interface.get_data(0, 10, "BTCUSDT")
+        print_execution(data)
 
     print__()
 

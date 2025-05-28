@@ -1,0 +1,3 @@
+from linktester.classes import HistoryFetcher, HistoryFetcherCandleInterface
+from linktester.linktest import BinanceHistoryFetcher, Candle, BinanceHistoryFetcherCandleInterface
+from linktester.registry import InterfaceSearcher

@@ -12,3 +12,10 @@ class HistoryFetcher:
         np.random.seed(seed)
         return np.random.rand(amount)
 
+
+class HistoryFetcherCandleInterface:
+    history_fetcher: F
+
+    @turn
+    def get_data(self, start, amount, ticker):
+        pass
